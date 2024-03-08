@@ -10,7 +10,7 @@ Ez a projekt egy egyszerű todo alkalmazás amely a Slim PHP micro-keretrendszer
 
 2. **Engedélyezd a php.ini fájlban a következőket:**
 
-    extension=pdo_sqlite
+    extension=pdo_sqlite\
     extension=sqlite3
 
 3. **Composer telepítése:**
