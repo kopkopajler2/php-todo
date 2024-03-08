@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        /* Basic CSS for layout */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .todo-item {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+        /* Additional styling can go here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Todo App</h1>
+        <div>
+            <input type="text" id="category" placeholder="Category">
+            <input type="text" id="description" placeholder="Description">
+            <button id="addTodo">Add Todo</button>
+        </div>
+        <div id="todos">
+            <!-- Todos will be listed here -->
+        </div>
+    </div>
+
+    <script>
+         function loadTodos() {
+        fetch('http://localhost:8000/api/todos')
+        .then(response => response.json())
+        .then(data => displayTodos(data));
+}
+        // JavaScript to interact with the API will go here
+        document.addEventListener('DOMContentLoaded', function () {
+        loadTodos();
+        document.getElementById('addTodo').addEventListener('click', addTodo);
+
+       
+
+
+});
+
+
+function displayTodos(todos) {
+    const todosContainer = document.getElementById('todos');
+    todosContainer.innerHTML = '';
+    todos.forEach(todo => {
+        const todoElement = document.createElement('div');
+        todoElement.className = 'todo-item';
+        todoElement.innerHTML = `
+            <span>${todo.category}: ${todo.description}</span>
+            <button onclick="deleteTodo(${todo.id})">Delete</button>
+            <button onclick="updateTodo(${todo.id})">Update</button>
+        `;
+        todosContainer.appendChild(todoElement);
+    });
+}
+
+function addTodo() {
+    const category = document.getElementById('category').value;
+    const description = document.getElementById('description').value;
+
+    // Check for empty input fields
+    if (!category.trim() || !description.trim()) {
+        alert('Both category and description are required.');
+        return;
+    }
+
+    fetch('http://localhost:8000/api/todos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ category, description }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Bad Request');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        loadTodos();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to add todo.');
+    });
+}
+
+function deleteTodo(id) {
+    fetch(`http://localhost:8000/api/todos/${id}`, {
+        method: 'DELETE',
+    });
+    loadTodos();
+}
+
+function updateTodo() {
+    fetch(`http://localhost:8000/api/todos/${id}`, {
+        method: 'PUT',
+    });
+    loadTodos();
+}
+
+
+    </script>
+</body>
+</html>
