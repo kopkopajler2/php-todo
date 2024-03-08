@@ -14,7 +14,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 $app = AppFactory::create();
 
-// SQLite connection
+//SQLite adatbázis
 $pdo = new PDO('sqlite:todos.sqlite');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -27,7 +27,7 @@ $query = "
 ";
 
 $pdo->exec($query);
-// Routes
+//routok
 $app->get('/api/todos', function (Request $request, Response $response, $args) use ($pdo) {
     $stmt = $pdo->query('SELECT * FROM todos');
     $todos = $stmt->fetchAll(PDO::FETCH_ASSOC);
