@@ -27,6 +27,7 @@ $query = "
 ";
 
 $pdo->exec($query);
+
 //routok
 $app->get('/api/todos', function (Request $request, Response $response, $args) use ($pdo) {
     $stmt = $pdo->query('SELECT * FROM todos');
