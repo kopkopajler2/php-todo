@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,8 +23,8 @@
     <div class="container">
         <h1>Todo App</h1>
         <div>
-            <input type="text" id="category" placeholder="Category">
-            <input type="text" id="description" placeholder="Description">
+            <input type="text" id="category" placeholder="Kategrória">
+            <input type="text" id="description" placeholder="Leírás">
             <button id="addTodo">ToDo hozzáadása</button>
         </div>
         <div id="todos">
@@ -55,8 +55,8 @@ function displayTodos(todos) {
         todoElement.className = 'todo-item';
         todoElement.innerHTML = `
             <span>${todo.category}: ${todo.description}</span>
-            <button onclick="deleteTodo(${todo.id})">Delete</button>
-            <button onclick="updateTodo(${todo.id})">Update</button>
+            <button onclick="deleteTodo(${todo.id})">Törlés</button>
+            <button onclick="updateTodo(${todo.id})">Módosítás</button>
         `;
         todosContainer.appendChild(todoElement);
     });
@@ -106,7 +106,7 @@ function updateTodo(id) {
     const description = document.getElementById('description').value;
 
     if (!category.trim() || !description.trim()) {
-        alert('Category and description are required!');
+        alert('Nem jó formátum!');
         return;
     }
 
@@ -124,11 +124,11 @@ function updateTodo(id) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Success:', data);
+        console.log('Siker:', data);
         loadTodos();
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Hiba:', error);
     });
 }
 

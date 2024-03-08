@@ -43,14 +43,14 @@ $app->post('/api/todos', function (Request $request, Response $response, $args) 
     $description = $data['description'] ?? '';
 
     if (empty($category) || empty($description)) {
-        $response->getBody()->write(json_encode(['error' => 'Category and description are required']));
+        $response->getBody()->write(json_encode(['error' => 'Kategória és leírás megadása kötelező!']));
         return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
     }
 
     try {
         $stmt = $pdo->prepare('INSERT INTO todos (category, description) VALUES (?, ?)');
         $stmt->execute([$category, $description]);
-        $response->getBody()->write(json_encode(['message' => 'Todo added successfully']));
+        $response->getBody()->write(json_encode(['message' => 'Todod sikeressen hozzáadva!']));
         return $response->withHeader('Content-Type', 'application/json');
     } catch (PDOException $e) {
         $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
@@ -62,7 +62,7 @@ $app->delete('/api/todos/{id}', function (Request $request, Response $response, 
     $id = $args['id'];
     $stmt = $pdo->prepare('DELETE FROM todos WHERE id = ?');
     $stmt->execute([$id]);
-    $response->getBody()->write(json_encode(['message' => 'Todo deleted successfully']));
+    $response->getBody()->write(json_encode(['message' => 'Todo sikeresen törölve!']));
     return $response->withHeader('Content-Type', 'application/json');
 });
 
@@ -74,14 +74,14 @@ $app->put('/api/todos/{id}', function (Request $request, Response $response, $ar
     $description = $data['description'] ?? '';
 
     if (empty($category) || empty($description)) {
-        $response->getBody()->write(json_encode(['error' => 'Category and description are required']));
+        $response->getBody()->write(json_encode(['error' => 'kategória és leírás megadása kötelező!']));
         return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
     }
 
     try {
         $stmt = $pdo->prepare('UPDATE todos SET category = ?, description = ? WHERE id = ?');
         $stmt->execute([$category, $description, $id]);
-        $response->getBody()->write(json_encode(['message' => 'Todo updated successfully']));
+        $response->getBody()->write(json_encode(['message' => 'Todo sikeresen módosítva!']));
         return $response->withHeader('Content-Type', 'application/json');
     } catch (PDOException $e) {
         $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
