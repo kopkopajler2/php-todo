@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
     <style>
-        /* Basic CSS for layout */
         body {
             font-family: Arial, sans-serif;
         }
@@ -18,7 +17,6 @@
             padding: 10px;
             margin-bottom: 5px;
         }
-        /* Additional styling can go here */
     </style>
 </head>
 <body>
@@ -27,10 +25,9 @@
         <div>
             <input type="text" id="category" placeholder="Category">
             <input type="text" id="description" placeholder="Description">
-            <button id="addTodo">Add Todo</button>
+            <button id="addTodo">ToDo hozzáadása</button>
         </div>
         <div id="todos">
-            <!-- Todos will be listed here -->
         </div>
     </div>
 
@@ -40,7 +37,6 @@
         .then(response => response.json())
         .then(data => displayTodos(data));
 }
-        // JavaScript to interact with the API will go here
         document.addEventListener('DOMContentLoaded', function () {
         loadTodos();
         document.getElementById('addTodo').addEventListener('click', addTodo);
@@ -70,9 +66,8 @@ function addTodo() {
     const category = document.getElementById('category').value;
     const description = document.getElementById('description').value;
 
-    // Check for empty input fields
     if (!category.trim() || !description.trim()) {
-        alert('Both category and description are required.');
+        alert('Kategrória és leírás megadása kötelező!');
         return;
     }
 
@@ -85,7 +80,7 @@ function addTodo() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Bad Request');
+            throw new Error('Rossz válasz a szerverről!');
         }
         return response.json();
     })
@@ -95,7 +90,7 @@ function addTodo() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to add todo.');
+        alert('Todo hozzáadása sikertelen.');
     });
 }
 
@@ -106,11 +101,35 @@ function deleteTodo(id) {
     loadTodos();
 }
 
-function updateTodo() {
+function updateTodo(id) {
+    const category = document.getElementById('category').value;
+    const description = document.getElementById('description').value;
+
+    if (!category.trim() || !description.trim()) {
+        alert('Category and description are required!');
+        return;
+    }
+
+    const todoData = {
+        category,
+        description,
+    };
+
     fetch(`http://localhost:8000/api/todos/${id}`, {
         method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(todoData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        loadTodos();
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
-    loadTodos();
 }
 
 

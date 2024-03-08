@@ -6,10 +6,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('HTTP/1.1 200 OK');
     exit();
 }
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
 
+use Slim\Factory\AppFactory;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 require __DIR__ . '/vendor/autoload.php';
 
 $app = AppFactory::create();
@@ -68,11 +68,25 @@ $app->delete('/api/todos/{id}', function (Request $request, Response $response, 
 
 $app->put('/api/todos/{id}', function (Request $request, Response $response, $args) use ($pdo) {
     $id = $args['id'];
-    $data = $request->getParsedBody();
-    $stmt = $pdo->prepare('UPDATE todos SET category = ?, description = ? WHERE id = ?');
-    $stmt->execute([$data['category'], $data['description'], $id]);
-    $response->getBody()->write(json_encode(['message' => 'Todo updated successfully']));
-    return $response->withHeader('Content-Type', 'application/json');
+    $json = $request->getBody();
+    $data = json_decode($json, true);
+    $category = $data['category'] ?? '';
+    $description = $data['description'] ?? '';
+
+    if (empty($category) || empty($description)) {
+        $response->getBody()->write(json_encode(['error' => 'Category and description are required']));
+        return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+    }
+
+    try {
+        $stmt = $pdo->prepare('UPDATE todos SET category = ?, description = ? WHERE id = ?');
+        $stmt->execute([$category, $description, $id]);
+        $response->getBody()->write(json_encode(['message' => 'Todo updated successfully']));
+        return $response->withHeader('Content-Type', 'application/json');
+    } catch (PDOException $e) {
+        $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    }
 });
 
 $app->run();
